@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import UserProxy from '../proxy/UserProxy';
+import { Form, Button, Container, Row, Col } from "react-bootstrap"
 
 const Login = () => {
     const userProxy = new UserProxy
@@ -25,23 +26,48 @@ const Login = () => {
 
     return (
         <>
-            <h1>Login</h1>
-            {/* <Form.Floating className="mb-3">
-    <Form.Control
-      id="floatingInputCustom"
-      type="email"
-      placeholder="name@example.com"
-    />
-    <label htmlFor="floatingInputCustom">Email address</label>
-  </Form.Floating>
-  <Form.Floating>
-    <Form.Control
-      id="floatingPasswordCustom"
-      type="password"
-      placeholder="Password"
-    />
-    <label htmlFor="floatingPasswordCustom">Password</label>
-  </Form.Floating> */}
+
+
+            <Container className='mt-5'>
+                <h1 className='m-3 text-center'>LOGIN</h1>
+                <Row>
+                    <Col md={3} className='mx-auto'></Col>
+                    <Col md={6} className='mx-auto'>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group className="mb-3" controlId="formBasicEmail">
+                                <Form.Label>Email address</Form.Label>
+                                <Form.Control type="email" placeholder="Enter email" ref={emailRef} />
+
+                            </Form.Group>
+
+                            <Form.Group className="mb-3" controlId="formBasicPassword">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control type="password" placeholder="Password" ref={passwordRef} />
+                            </Form.Group>
+                            <div className='text-center'>
+                                <Form.Text className="text-muted">
+                                    If you didn't have an account, please <Link to='/register'>register</Link>
+                                </Form.Text><br />
+                                <Button className="" variant="primary" type="submit">
+                                    Submit
+                                </Button>
+                            </div>
+
+                        </Form>
+                    </Col>
+                    <Col md={3} className='mx-auto'></Col>
+
+
+
+                </Row>
+
+            </Container>
+
+
+
+
+            {/* <h1>Login</h1>
+            
 
             <form onSubmit={handleSubmit}>
 
@@ -63,11 +89,11 @@ const Login = () => {
 
             </form>
 
-            <h2>
+            <span>
                 <Link to="/register" >
-                    If you don't register click here and register
+                    If you didn't register click here and register
                 </Link>
-            </h2>
+            </span> */}
 
 
         </>

@@ -11,6 +11,12 @@ import {
 } from "react-bootstrap";
 
 export default function Navigation() {
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    }
+
     return (
         <Navbar bg="primary" variant="light" expand="lg">
             <Container fluid>
@@ -18,9 +24,10 @@ export default function Navigation() {
                     <Col md={{ span: 5, order: 1 }} xs={{ order: 2 }} className="my-md-0 my-3">
                         <Container className="p-0" fluid>
                             <Row>
-                                <Col xs="1">
+                                <Col md="1" xs="1" className=" bg-primary text-wrap">
 
-                                    <i class="bi bi-arrow-left-square"></i>
+                                    <Button onClick={handleLogout}><i class="bi bi-box-arrow-left">
+                                    </i></Button>
 
                                 </Col>
                                 <Col md="3" xs="4">
@@ -38,7 +45,7 @@ export default function Navigation() {
                                                 aria-label="Search"
                                             />
                                             <Button className="bg-light bg-opacity-50  border-0">
-                                                <i className="fas fa-search text-dark"></i>
+                                                <i className="bi bi-search text-dark"></i>
                                             </Button>
                                         </InputGroup>
                                     </Form>
