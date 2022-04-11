@@ -158,17 +158,13 @@ const Homepage = () => {
                 </Modal.Footer>
             </Modal>
 
-            <div style={{ "display": "flex" }}>
-                <Button variant="light" onClick={handleShowAddCategoryModal} style={{ "width": "7rem", "height": "4rem", "margin": "auto" }} >Add Category</Button>
-
-            </div>
-
-
+            <Button
+                variant="outline-light"
+                onClick={handleShowAddCategoryModal}
+                className="m-5"
+                style={{}} >New Category</Button>
 
             <DragDropContext onDragEnd={handleDragEnd} >
-
-
-
 
                 <Droppable direction="horizontal"
                     type="column" droppableId="droppable-main">
@@ -181,7 +177,7 @@ const Homepage = () => {
                                     <Draggable key={cat.id} draggableId={`${cat.id}`} index={index}>
                                         {(provider) => (
 
-                                            <div ref={provider.innerRef} {...provider.draggableProps} {...provider.dragHandleProps} style={{ "border": "2px solid red", "display": "inline-block" }} >
+                                            <div ref={provider.innerRef} {...provider.draggableProps} {...provider.dragHandleProps} style={{ "display": "inline-block" }} >
 
                                                 <Category content={cat} users={users} index={index} setTodosOrder={setTodosOrder} setCategory={setCategory} />
 

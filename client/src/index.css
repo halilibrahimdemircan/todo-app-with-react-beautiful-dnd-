@@ -49,4 +49,12 @@ body, html, .App, #root, .auth-wrapper {
 .custom-control-label {
   font-weight: 400;
 }
+.btn-light-hover:hover {
+
+  background-color: #ffffff;
+  color: #167bff;
+  border: 1px solid #167bff;
+  transition: all .3s;
+
+}
 

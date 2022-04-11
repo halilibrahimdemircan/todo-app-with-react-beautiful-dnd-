@@ -118,8 +118,11 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
             <Draggable draggableId={`cat-${content.id}`} index={index}>
                 {(provided) => (
                     <div {...provided.draggableProps}
-                        ref={provided.innerRef} style={{ "display": "inline-flex", "border": "2px solid" }}>
-                        <Card style={{ "margin": "1rem", "height": "35rem", "width": "12rem" }}>
+                        ref={provided.innerRef} style={{ "display": "inline-flex" }}>
+                        <Card
+                            style={{ "height": "min-content", "width": "18rem" }}
+                            className="shadow-sm m-3"
+                        >
                             <Card.Header {...provided.dragHandleProps}>{content.category_name}
                                 <i style={{ "float": "right" }} class="bi bi-chevron-left"></i>
                             </Card.Header>
