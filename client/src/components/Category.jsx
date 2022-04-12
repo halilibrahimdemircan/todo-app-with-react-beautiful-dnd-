@@ -122,56 +122,54 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
 
             <Draggable draggableId={`cat-${content.id}`} index={index}>
                 {(provided) => (
+                    <div style={{ "height": "min-content", minWidth: "350px" }}>
+                        <Card
+                            {...provided.draggableProps}
+                            ref={provided.innerRef}
+                            {...provided.dragHandleProps}
+                            className="shadow-sm m-3 inline-flex "
+                        >
+                            <Card.Header className='d-flex justify-content-between' ><span>{content.category_name}</span>
+                                <i className="bi bi-chevron-left"></i>
+                            </Card.Header>
+                            <Card.Body>
+                                <Droppable droppableId={`category-${content.id ? content.id : 0}`} type="todo">
+                                    {(provided) => (
+                                        <div
+                                            className="d-flex flex-column border border-white overflow-auto"
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
 
-                    <Card
-                        {...provided.draggableProps}
-                        ref={provided.innerRef}
-                        {...provided.dragHandleProps}
+                                        >
+                                            {content.todos?.map((todo, idx) => (
+                                                <Item
+                                                    key={todo.id}
+                                                    content={todo}
+                                                    index={idx}
+                                                    users={users}
+                                                    setCategory={setCategory}
+                                                    setTodosOrder={setTodosOrder}
 
-                        style={{ "height": "min-content", "width": "18rem", "display": "inline-flex" }}
-                        className="shadow-sm m-3"
-                    >
-                        <Card.Header >{content.category_name}
-                            <i style={{ "float": "right" }} className="bi bi-chevron-left"></i>
-                        </Card.Header>
-                        <Card.Body>
-                            <Droppable droppableId={`category-${content.id ? content.id : 0}`} type="todo">
-                                {(provided) => (
-                                    <div
-                                        className="d-flex flex-column border border-white overflow-auto"
-                                        {...provided.droppableProps}
-                                        ref={provided.innerRef}
+                                                // columnId={props.column.id}
+                                                // state={props.state}
+                                                // setState={props.setState}
+                                                />
+                                            ))}
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
 
-                                    >
-                                        {content.todos?.map((todo, idx) => (
-                                            <Item
-                                                key={todo.id}
-                                                content={todo}
-                                                index={idx}
-                                                users={users}
-                                                setCategory={setCategory}
-                                                setTodosOrder={setTodosOrder}
+                            </Card.Body>
+                            <Card.Footer className="text-center">
+                                <Button onClick={handleShowCreateTodoModal} variant="primary" size='sm'>
+                                    New Todo
+                                    <span className='m-2'><i className="bi bi-plus-square"></i></span>
+                                </Button>
+                            </Card.Footer>
+                        </Card>
 
-                                            // columnId={props.column.id}
-                                            // state={props.state}
-                                            // setState={props.setState}
-                                            />
-                                        ))}
-                                        {provided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
-
-                        </Card.Body>
-                        <Card.Footer className="text-center">
-                            <Button onClick={handleShowCreateTodoModal} variant="primary" size='sm' style={{}}>
-                                New Todo
-                                <span className='m-2'><i className="bi bi-plus-square"></i></span>
-                            </Button>
-                        </Card.Footer>
-                    </Card>
-
-
+                    </div>
                 )}
 
             </Draggable>

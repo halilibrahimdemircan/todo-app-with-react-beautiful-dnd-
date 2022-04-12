@@ -138,7 +138,6 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}
-                        style={{ "height": "100%" }}
                         className="my-2 shadow"
                     >
                         <div
@@ -166,14 +165,14 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                                     </OverlayTrigger>
                                 </Card.Text>
                                 <hr></hr>
-                                <Card.Text>
+                                <Card.Text className='d-flex justify-content-between align-items-center'>
 
                                     <small className="text-muted">Due Date: {new Date(content.dueDate).toLocaleString('en', {
                                         month: 'long',
                                         day: 'numeric',
                                         year: 'numeric',
                                     })}</small>
-                                    <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' style={{ "float": "right", "marginBottom": "1rem" }}>
+                                    <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' >
                                         <i className="bi bi-pencil-fill"></i>
                                     </Button>
                                 </Card.Text>

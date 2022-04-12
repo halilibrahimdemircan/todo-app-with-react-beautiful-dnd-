@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
-import TodoProxy from '../proxy/TodoProxy';
-import Category from '../components/Category';
-import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import uuid from "react-uuid"
-
-
+import React, { useState, useEffect, useRef } from "react";
+import TodoProxy from "../proxy/TodoProxy";
+import Category from "../components/Category";
+import { Button, Modal, Form, Row, Col } from "react-bootstrap";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import uuid from "react-uuid";
 
 const Homepage = () => {
     const todoProxy = new TodoProxy();
@@ -16,55 +14,64 @@ const Homepage = () => {
     const [categoryOrder, setCategoryOrder] = useState([]);
     const [todosOrder, setTodosOrder] = useState([]);
 
-
-
     const handleShowAddCategoryModal = () => setShowAddCategoryModal(true);
     const handleCloseAddCategoryModal = () => setShowAddCategoryModal(false);
 
     const handleSaveAddCategoryModal = () => {
-        todoProxy.createCategory(categoryName, categoryOrder.length)
-            .then(res => {
-                setCategory([...category, res.data.data])
-                setTodosOrder([...todosOrder, []])
-                setShowAddCategoryModal(false)
+        todoProxy
+            .createCategory(categoryName, categoryOrder.length)
+            .then((res) => {
+                setCategory([...category, res.data.data]);
+                setTodosOrder([...todosOrder, []]);
+                setShowAddCategoryModal(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
-                setShowAddCategoryModal(false)
-            })
-    }
-
+                setShowAddCategoryModal(false);
+            });
+    };
 
     const getAllUsers = () => {
-        todoProxy.getUsers()
-            .then(res => {
-                setUsers(res.data.data);
-            });
-    }
+        todoProxy.getUsers().then((res) => {
+            setUsers(res.data.data);
+        });
+    };
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
     // getting all categories from db
     const getAllCategories = () => {
-        setLoading(true)
-        todoProxy.getAllCategories()
-            .then(res => {
+        setLoading(true);
+        todoProxy
+            .getAllCategories()
+            .then((res) => {
                 console.log(res.data.data, "categories");
                 setCategory(res.data.data);
                 setCategoryOrder(() => {
-                    return res.data.data.map((el) => { return el.id })
-                })
+                    return res.data.data.map((el) => {
+                        return el.id;
+                    });
+                });
                 setTodosOrder(() => {
-                    console.log(res.data.data.map((el) => { return el.todos.map((elm) => { return elm.id }) }));
-                    return res.data.data.map((el) => { return el.todos.map((elm) => { return elm.id }) })
-                }
-                )
-                setLoading(false)
+                    console.log(
+                        res.data.data.map((el) => {
+                            return el.todos.map((elm) => {
+                                return elm.id;
+                            });
+                        })
+                    );
+                    return res.data.data.map((el) => {
+                        return el.todos.map((elm) => {
+                            return elm.id;
+                        });
+                    });
+                });
+                setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
-                setLoading(false)
-            })
-    }
+                setLoading(false);
+            });
+    };
 
     const handleDragEnd = (result) => {
         const { destination, source, type } = result;
@@ -93,80 +100,80 @@ const Homepage = () => {
             orders.splice(destination.index, 0, removedOrder);
             setCategoryOrder(orders);
 
-            return
+            return;
         }
 
-
-
-        const sourceCategoryIndex = category.findIndex((el) => { return el.id == source.droppableId.split("-")[1] })
-        const destinationCategoryIndex = category.findIndex((el) => { return el.id == destination.droppableId.split("-")[1] })
-
+        const sourceCategoryIndex = category.findIndex((el) => {
+            return el.id == source.droppableId.split("-")[1];
+        });
+        const destinationCategoryIndex = category.findIndex((el) => {
+            return el.id == destination.droppableId.split("-")[1];
+        });
 
         setCategory((category) => {
             let item = category[sourceCategoryIndex].todos[source.index];
             category[sourceCategoryIndex].todos.splice(source.index, 1);
-            category[destinationCategoryIndex].todos.splice(destination.index, 0, item);
-            return category
-        })
+            category[destinationCategoryIndex].todos.splice(
+                destination.index,
+                0,
+                item
+            );
+            return category;
+        });
         setTodosOrder((todosOrder) => {
             let item = todosOrder[sourceCategoryIndex][source.index];
             todosOrder[sourceCategoryIndex].splice(source.index, 1);
             todosOrder[destinationCategoryIndex].splice(destination.index, 0, item);
             console.log(todosOrder, "todosOrder dragend");
-            return todosOrder
-        })
-
-
-
-    }
+            return todosOrder;
+        });
+    };
 
     useEffect(() => {
         if (todosOrder.length > 0) {
             for (let i = 0; i < todosOrder.length; i++) {
-                const element = todosOrder[i]
+                const element = todosOrder[i];
                 if (element.length > 0) {
-                    todoProxy.changeTodosOrder(todosOrder)
-                    return
+                    todoProxy.changeTodosOrder(todosOrder);
+                    return;
                 }
-                return
+                return;
             }
             // todoProxy.changeTodosOrder(todosOrder)
-
         }
-    }, [todosOrder])
+    }, [todosOrder]);
 
     useEffect(() => {
         if (categoryOrder.length > 0) {
-            todoProxy.changeCategoryOrder(categoryOrder)
-
+            todoProxy.changeCategoryOrder(categoryOrder);
         }
-    }, [categoryOrder])
+    }, [categoryOrder]);
 
     useEffect(() => {
-        getAllCategories()
-        getAllUsers()
-
-
-    }, [])
-
+        getAllCategories();
+        getAllUsers();
+    }, []);
 
     return (
         <>
-
-
             <Modal show={showAddCategoryModal} onHide={handleCloseAddCategoryModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create New Category</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-
                         <Form.Group
                             className="mb-3"
                             controlId="exampleForm.ControlTextarea1"
                         >
                             <Form.Label>Category Name</Form.Label>
-                            <Form.Control as="textarea" rows={2} placeholder="Please type content here..." value={categoryName} onChange={e => setcategoryName(e.target.value)} />
+                            <Form.Control
+                                as="textarea"
+                                rows={2}
+                                placeholder="Please type content here..."
+                                value={categoryName}
+                                onChange={(e) => setcategoryName(e.target.value)}
+                            />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -185,44 +192,44 @@ const Homepage = () => {
                 variant="outline-light"
                 onClick={handleShowAddCategoryModal}
                 className="m-5"
-                style={{}} >New Category</Button>
+                style={{}}
+            >
+                New Category
+            </Button>
 
-            <DragDropContext onDragEnd={handleDragEnd} >
-
+            <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable
                     direction="horizontal"
                     type="column"
-                    droppableId="droppable-main">
+                    droppableId="droppable-main"
+                >
                     {(provided) => (
-
-                        <div {...provided.droppableProps}
-                            ref={provided.innerRef}>
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            style={{ height: "80vh" }}
+                            className="d-flex flex-nowrap overflow-auto"
+                        >
                             {category?.map((cat, index) => {
                                 return (
-
-                                    <Category key={cat.id} content={cat} users={users} index={index} setTodosOrder={setTodosOrder} setCategory={setCategory} />
-
-                                )
-
-
-
+                                    <Category
+                                        key={cat.id}
+                                        content={cat}
+                                        users={users}
+                                        index={index}
+                                        setTodosOrder={setTodosOrder}
+                                        setCategory={setCategory}
+                                    />
+                                );
                             })}
 
                             {provided.placeholder}
                         </div>
-
-
                     )}
-
                 </Droppable>
-
             </DragDropContext>
-
-
-
         </>
+    );
+};
 
-    )
-}
-
-export default Homepage
+export default Homepage;
