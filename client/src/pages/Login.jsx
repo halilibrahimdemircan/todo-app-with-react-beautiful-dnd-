@@ -10,7 +10,6 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(emailRef.current.value, passwordRef.current.value);
 
         userProxy.login(emailRef.current.value, passwordRef.current.value)
             .then(res => {

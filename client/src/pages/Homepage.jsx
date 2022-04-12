@@ -44,7 +44,6 @@ const Homepage = () => {
         todoProxy
             .getAllCategories()
             .then((res) => {
-                console.log(res.data.data, "categories");
                 setCategory(res.data.data);
                 setCategoryOrder(() => {
                     return res.data.data.map((el) => {
@@ -52,13 +51,7 @@ const Homepage = () => {
                     });
                 });
                 setTodosOrder(() => {
-                    console.log(
-                        res.data.data.map((el) => {
-                            return el.todos.map((elm) => {
-                                return elm.id;
-                            });
-                        })
-                    );
+
                     return res.data.data.map((el) => {
                         return el.todos.map((elm) => {
                             return elm.id;
@@ -86,12 +79,9 @@ const Homepage = () => {
             return;
         }
         if (type === "column") {
-            console.log(category);
 
             const items = category;
-            console.log(items, "items");
             const [removedItem] = items.splice(result.source.index, 1);
-            console.log(removedItem, "removedItem");
             items.splice(destination.index, 0, removedItem);
             setCategory(items);
 
@@ -124,23 +114,13 @@ const Homepage = () => {
             let item = todosOrder[sourceCategoryIndex][source.index];
             todosOrder[sourceCategoryIndex].splice(source.index, 1);
             todosOrder[destinationCategoryIndex].splice(destination.index, 0, item);
-            console.log(todosOrder, "todosOrder dragend");
-            return todosOrder;
+            return [...todosOrder];
         });
     };
-
     useEffect(() => {
-        if (todosOrder.length > 0) {
-            for (let i = 0; i < todosOrder.length; i++) {
-                const element = todosOrder[i];
-                if (element.length > 0) {
-                    todoProxy.changeTodosOrder(todosOrder);
-                    return;
-                }
-                return;
-            }
-            // todoProxy.changeTodosOrder(todosOrder)
-        }
+        console.log("useeffecttodoorder", todosOrder);
+        todoProxy.changeTodosOrder(todosOrder, categoryOrder);
+
     }, [todosOrder]);
 
     useEffect(() => {

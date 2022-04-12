@@ -22,21 +22,12 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
 
     const handleSaveCreateTodoModal = () => {
 
-        console.log(content, "content");
         todoProxy.createTodo(assignedTo, contentRef.current.value, dueDate, content.id, content.todos ? content.todos.length : 1)
             .then(res => {
-                console.log(res, "başarılı create");
                 setCategory((category) => {
-                    console.log(category, "category");
-                    console.log(category.map((el) => {
-                        if (el.id === content.id) {
-                            return el.todos ? [...el.todos, res.data.data] : [res.data.data]
-                        }
-                        return el
-                    }))
+
                     return category.map((el) => {
                         if (el.id === content.id) {
-                            console.log(el, "el");
                             return { ...el, todos: el.todos ? [...el.todos, res.data.data] : [res.data.data] }
                         }
                         return el
@@ -44,12 +35,7 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
 
                 })
                 setTodosOrder((todosOrder) => {
-                    console.log(todosOrder.map((el, i) => {
-                        if (i === index) {
-                            return [...el, res.data.data.id]
-                        }
-                        return el
-                    }));
+
                     return todosOrder.map((el, i) => {
                         if (i === index) {
                             return [...el, res.data.data.id]

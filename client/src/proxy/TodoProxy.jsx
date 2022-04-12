@@ -36,10 +36,10 @@ export default class TodoProxy {
         })
     }
 
-    changeTodosOrder(todosOrder) {
-        console.log(todosOrder, "todosOrder");
+    changeTodosOrder(todosOrder, categoryOrder) {
         return Repository.post("http://localhost:8000/api/todo/order", {
-            todosOrder
+            todosOrder,
+            categoryOrder
         })
     }
 

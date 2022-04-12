@@ -34,7 +34,6 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
     // }
 
     const handleSaveEditTodoModal = () => {
-        console.log(content.id, newContent.current.value, newDueDate, newAssignedTo);
 
         todoProxy.updateTodo(content.id, newContent.current.value, newDueDate, newAssignedTo)
             .then((res) => {

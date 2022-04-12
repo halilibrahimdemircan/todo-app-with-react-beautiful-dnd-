@@ -29,19 +29,23 @@ exports.createTodo = catchAsync(async (req, res, next) => {
 })
 
 exports.updateTodosOrder = catchAsync(async (req, res, next) => {
-    const { todosOrder } = req.body;
-    console.log(todosOrder, "todosOrder");
+    const { todosOrder, categoryOrder } = req.body;
+    console.log(todosOrder, "todosOrder", categoryOrder, "categoryOrder");
     let query = "";
     todosOrder?.map((el, index) => {
 
         el?.map((el2, index2) => {
-            query += `update todo set todos_order = ${index2 + 1} where id = ${el2}; `
+            query += `update todo set todos_order = ${index2 + 1}, category_id = ${categoryOrder[index]} where id = ${el2};`
 
         })
 
 
     })
     await sampledb.query(query);
+    res.status(201).send({
+        status: 'success',
+
+    });
 
 })
 
