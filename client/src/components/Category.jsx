@@ -27,7 +27,6 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
 
         //     categoryId: content.id
         // }
-
         todoProxy.createTodo(assignedTo, contentRef.current.value, dueDate, content.id, content.todos.length)
             .then(res => {
                 setCategory((category) => {
@@ -94,7 +93,8 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicCheckbox">
                             <Form.Label>Assign To</Form.Label>
-                            <Form.Select onChange={(e) => { setAssignedTo(e.current.value) }}>
+                            <Form.Select defaultValue={""} onChange={(e) => { setAssignedTo(e.target.value) }}>
+                                <option>Choose</option>
                                 {users?.map(user => (
                                     <option key={user.id} value={user.email}>{user.email}</option>
                                 ))}

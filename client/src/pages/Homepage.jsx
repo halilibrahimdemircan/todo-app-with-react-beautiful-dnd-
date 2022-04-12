@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
 import TodoProxy from '../proxy/TodoProxy';
 import Category from '../components/Category';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
@@ -116,7 +115,25 @@ const Homepage = () => {
     }
 
     useEffect(() => {
-        todoProxy.changeCategoryOrder(categoryOrder)
+        if (todosOrder.length > 0) {
+            for (let i = 0; i < todosOrder.length; i++) {
+                const element = todosOrder[i]
+                if (element.length > 0) {
+                    todoProxy.changeTodosOrder(todosOrder)
+                    return
+                }
+                return
+            }
+            // todoProxy.changeTodosOrder(todosOrder)
+
+        }
+    }, [todosOrder])
+
+    useEffect(() => {
+        if (categoryOrder.length > 0) {
+            todoProxy.changeCategoryOrder(categoryOrder)
+
+        }
     }, [categoryOrder])
 
     useEffect(() => {
@@ -168,16 +185,16 @@ const Homepage = () => {
 
                 <Droppable direction="horizontal"
                     type="column" droppableId="droppable-main">
-                    {(provider) => (
+                    {(provided) => (
 
-                        <div {...provider.droppableProps} ref={provider.innerRef}>
+                        <div {...provided.droppableProps} ref={provided.innerRef}>
                             {category?.map((cat, index) => {
                                 return (
 
                                     <Draggable key={cat.id} draggableId={`${cat.id}`} index={index}>
-                                        {(provider) => (
+                                        {(provided) => (
 
-                                            <div ref={provider.innerRef} {...provider.draggableProps} {...provider.dragHandleProps} style={{ "display": "inline-block" }} >
+                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} style={{ "display": "inline-block" }} >
 
                                                 <Category content={cat} users={users} index={index} setTodosOrder={setTodosOrder} setCategory={setCategory} />
 
@@ -194,7 +211,7 @@ const Homepage = () => {
                                 )
                             })}
 
-                            {provider.placeholder}
+                            {provided.placeholder}
                         </div>
                     )}
 

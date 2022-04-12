@@ -4,7 +4,7 @@ const todoController = require('../../controllers/todoController')
 
 router
     .post('/', todoController.createTodo)
-// .post('/order', todoController.updateTodosOrder)
+    .post('/order', todoController.updateTodosOrder)
 // .get('/', todoController.getAllTodosByCategory)
 
 module.exports = router;

@@ -1,17 +1,22 @@
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const { sampledb } = require('../models/db');
+
 
 //model
 const { Todo } = require('../models/index')
 
 
 exports.createTodo = catchAsync(async (req, res, next) => {
-    const { content, dueDate, categoryId } = req.body;
+    const { assignedTo, content, dueDate, categoryId, todoOrder } = req.body;
     const todo = await Todo.create(
         {
+            assignedTo: assignedTo,
             content: content,
             dueDate: dueDate,
-            categoryId: categoryId
+            categoryId: categoryId,
+            todos_order: todoOrder
+
 
         }
     )
@@ -20,6 +25,22 @@ exports.createTodo = catchAsync(async (req, res, next) => {
         data: todo
     });
 })
+
+exports.updateTodosOrder = catchAsync(async (req, res, next) => {
+    const { todosOrder } = req.body;
+    console.log(todosOrder, "todosOrder");
+    let query = "";
+    todosOrder.map((el, index) => {
+
+        el.map((el2, index2) => {
+            query += `update todo set todos_order = ${index2 + 1} where id = ${el2}; `
+
+        })
+    })
+
+    await sampledb.query(query);
+})
+
 
 // exports.createCategory = catchAsync(async (req, res, next) => {
 //     const { categoryName } = req.body;

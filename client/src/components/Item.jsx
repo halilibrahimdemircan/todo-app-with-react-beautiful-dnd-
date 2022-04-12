@@ -66,15 +66,14 @@ const Item = ({ content, users, index }) => {
                         <Form.Group className="mb-3" controlId="formBasicCheckbox">
                             <Form.Label>Assign To</Form.Label>
                             <Form.Select label="Assing to" >
+                                <option>Choose</option>
                                 {users.map(user => (
                                     <option key={user.id} value={user.id}>{user.email}</option>
                                 ))}
                             </Form.Select>
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                            <Form.Check type="checkbox" label="Mark as done" />
-                        </Form.Group>
+
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
@@ -82,7 +81,7 @@ const Item = ({ content, users, index }) => {
                         Delete
                     </Button>
                     <Button variant="secondary" onClick={handleCloseEditTodoModal}>
-                        Close
+                        Mark as Done
                     </Button>
 
                     <Button variant="primary" onClick={handleSaveEditTodoModal}>
@@ -109,12 +108,13 @@ const Item = ({ content, users, index }) => {
             </Modal>
 
 
-            <Draggable draggableId={`item-${content.id}`} index={index}>
+            <Draggable draggableId={`item-${content.id}`} key={content.id} index={index}>
                 {(provided) => (
                     <Card
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         ref={provided.innerRef}
+                        style={{ "height": "100%" }}
                         className="my-2 shadow"
                     >
                         <div
@@ -131,9 +131,7 @@ const Item = ({ content, users, index }) => {
                                         placement="top"
                                         overlay={
                                             <Tooltip >
-                                                <ul>
-
-                                                </ul>
+                                                {content.assignedTo}
                                             </Tooltip>
                                         }
                                     >
@@ -145,7 +143,8 @@ const Item = ({ content, users, index }) => {
                                 </Card.Text>
                                 <hr></hr>
                                 <Card.Text>
-                                    <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' style={{ "float": "right" }}>
+                                    <small className="text-muted">Due Date: {content.dueDate.split('T')[0]}</small>
+                                    <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' style={{ "float": "right", "marginBottom": "1rem" }}>
                                         <i class="bi bi-pencil-fill"></i>
                                     </Button>
                                 </Card.Text>
