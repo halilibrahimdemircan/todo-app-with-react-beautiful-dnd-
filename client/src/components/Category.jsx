@@ -93,7 +93,7 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicCheckbox">
                             <Form.Label>Assign To</Form.Label>
-                            <Form.Select defaultValue={""} onChange={(e) => { setAssignedTo(e.target.value) }}>
+                            <Form.Select onChange={(e) => { setAssignedTo(e.target.value) }}>
                                 <option>Choose</option>
                                 {users?.map(user => (
                                     <option key={user.id} value={user.email}>{user.email}</option>

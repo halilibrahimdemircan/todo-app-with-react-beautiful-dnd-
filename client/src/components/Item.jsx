@@ -1,12 +1,17 @@
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Card, Button, Modal, Form, OverlayTrigger, Tooltip } from "react-bootstrap"
 import { Draggable } from 'react-beautiful-dnd';
+import TodoProxy from "../proxy/TodoProxy";
 
 
 
 
 const Item = ({ content, users, index }) => {
+    const todoProxy = new TodoProxy();
+    const newContent = useRef()
+    const [newDueDate, setNewDueDate] = useState('');
+    const [newAssignedTo, setNewAssignedTo] = useState('');
 
     const [showEditTodoModal, setShowEditTodoModal] = useState(false)
     const [showDeleteTodoModal, setShowDeleteTodoModal] = useState(false)
@@ -18,7 +23,15 @@ const Item = ({ content, users, index }) => {
     const handleCloseDeleteTodoModal = () => setShowDeleteTodoModal(false)
 
     const handleSaveEditTodoModal = () => {
+        console.log(content.id, newContent.current.value, newDueDate, newAssignedTo);
 
+        todoProxy.updateTodo(content.id, newContent.current.value, newDueDate, newAssignedTo)
+            .then((res) => {
+                console.log("başarılı update", res)
+            })
+            .catch((err) => {
+                console.log("err update", err)
+            })
 
 
         handleCloseEditTodoModal();
@@ -52,7 +65,7 @@ const Item = ({ content, users, index }) => {
                                 type="date"
                                 placeholder="Due Date"
                                 autoFocus
-                            // onChange={(e) => { setDueDate(e.target.value) }}
+                                onChange={(e) => { setNewDueDate(e.target.value) }}
                             />
                         </Form.Group>
                         <Form.Group
@@ -60,15 +73,15 @@ const Item = ({ content, users, index }) => {
                             controlId="exampleForm.ControlTextarea1"
                         >
                             <Form.Label>Content</Form.Label>
-                            <Form.Control as="textarea" rows={2} placeholder="Please type new content here..." />
+                            <Form.Control as="textarea" rows={2} placeholder="Please type new content here..." ref={newContent} />
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="formBasicCheckbox">
                             <Form.Label>Assign To</Form.Label>
-                            <Form.Select label="Assing to" >
+                            <Form.Select onChange={(e) => { setNewAssignedTo(e.target.value) }} >
                                 <option>Choose</option>
                                 {users.map(user => (
-                                    <option key={user.id} value={user.id}>{user.email}</option>
+                                    <option key={user.id} value={user.email}>{user.email}</option>
                                 ))}
                             </Form.Select>
                         </Form.Group>
@@ -143,7 +156,12 @@ const Item = ({ content, users, index }) => {
                                 </Card.Text>
                                 <hr></hr>
                                 <Card.Text>
-                                    <small className="text-muted">Due Date: {content.dueDate.split('T')[0]}</small>
+
+                                    <small className="text-muted">Due Date: {new Date(content.dueDate).toLocaleString('en', {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric',
+                                    })}</small>
                                     <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' style={{ "float": "right", "marginBottom": "1rem" }}>
                                         <i class="bi bi-pencil-fill"></i>
                                     </Button>

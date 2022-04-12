@@ -43,5 +43,17 @@ export default class TodoProxy {
         })
     }
 
+    updateTodo(todoId, content, dueDate, assignedTo) {
+        console.log(todoId, content, dueDate, assignedTo);
+        return Repository.patch(`http://localhost:8000/api/todo/${todoId}`, {
+
+            content: content,
+            dueDate: new Date(dueDate),
+            assignedTo: assignedTo
+        })
+    }
+
+
+
 
 }

@@ -20,7 +20,7 @@ module.exports = sampledb.define(
             defaultValue: false,
         },
         dueDate: {
-            type: Sequelize.DATE,
+            type: Sequelize.TEXT,
             allowNull: true,
         },
         todos_order: {
