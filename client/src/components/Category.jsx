@@ -3,6 +3,7 @@ import { Card, Button, Modal, Form } from "react-bootstrap"
 import Item from "./Item";
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import TodoProxy from "../proxy/TodoProxy";
+import uuid from 'react-uuid'
 
 
 
@@ -21,14 +22,10 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
     const handleCloseCreateTodoModal = () => setShowCreateTodoModal(false)
 
     const handleSaveCreateTodoModal = () => {
-        // const todo = {
-        //     content: contentRef.current.value,
-        //     dueDate: dueDate,
-
-        //     categoryId: content.id
-        // }
-        todoProxy.createTodo(assignedTo, contentRef.current.value, dueDate, content.id, content.todos.length)
+        let order = content.todos.length > 0 ? content.todos.length : 0;
+        todoProxy.createTodo(assignedTo, contentRef.current.value, dueDate, content.id, order)
             .then(res => {
+                console.log(res, "başarılı create");
                 setCategory((category) => {
                     return category.map((el) => {
                         if (el.id === content.id) {
@@ -117,41 +114,46 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
 
             <Draggable draggableId={`cat-${content.id}`} index={index}>
                 {(provided) => (
-                    <div {...provided.draggableProps}
-                        ref={provided.innerRef} style={{ "display": "inline-flex" }}>
-                        <Card
-                            style={{ "height": "min-content", "width": "18rem" }}
-                            className="shadow-sm m-3"
-                        >
-                            <Card.Header {...provided.dragHandleProps}>{content.category_name}
-                                <i style={{ "float": "right" }} class="bi bi-chevron-left"></i>
-                            </Card.Header>
-                            <Card.Body>
-                                <Droppable droppableId={`category-${content.id}`} type="task">
-                                    {(provided) => (
-                                        <div
-                                            className="d-flex flex-column border border-white overflow-auto"
-                                            {...provided.droppableProps}
-                                            ref={provided.innerRef}
 
-                                        >
-                                            {content.todos?.map((todo, idx) => (
-                                                <Item
-                                                    key={todo.id}
-                                                    content={todo}
-                                                    index={idx}
-                                                    users={users}
-                                                // columnId={props.column.id}
-                                                // state={props.state}
-                                                // setState={props.setState}
-                                                />
-                                            ))}
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
+                    <Card
+                        {...provided.draggableProps}
+                        ref={provided.innerRef}
+                        {...provided.dragHandleProps}
 
-                                {/* {todos?.map((todo) => {
+                        style={{ "height": "min-content", "width": "18rem", "display": "inline-flex" }}
+                        className="shadow-sm m-3"
+                    >
+                        <Card.Header >{content.category_name}
+                            <i style={{ "float": "right" }} class="bi bi-chevron-left"></i>
+                        </Card.Header>
+                        <Card.Body>
+                            <Droppable droppableId={`category-${content.id ? content.id : 0}`} type="task">
+                                {(provided) => (
+                                    <div
+                                        className="d-flex flex-column border border-white overflow-auto"
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+
+                                    >
+                                        {content.todos?.map((todo, idx) => (
+                                            <Item
+                                                key={uuid()}
+                                                content={todo}
+                                                index={idx}
+                                                users={users}
+                                                setCategory={setCategory}
+
+                                            // columnId={props.column.id}
+                                            // state={props.state}
+                                            // setState={props.setState}
+                                            />
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+
+                            {/* {todos?.map((todo) => {
                                     return (
                                         <Draggable key={todo.id} draggableId={todo.id.toString()} index={todos.indexOf(todo)}>
                                             {(provider) => (
@@ -166,22 +168,19 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
 
 
 
-                            </Card.Body>
-                            <Card.Footer className="text-center">
-                                <Button onClick={handleShowCreateTodoModal} variant="primary" size='sm' style={{}}>
-                                    New Todo
-                                    <i class="bi bi-plus-square"></i>
-                                </Button>
-                            </Card.Footer>
-                        </Card>
+                        </Card.Body>
+                        <Card.Footer className="text-center">
+                            <Button onClick={handleShowCreateTodoModal} variant="primary" size='sm' style={{}}>
+                                New Todo
+                                <i class="bi bi-plus-square"></i>
+                            </Button>
+                        </Card.Footer>
+                    </Card>
 
-                    </div>
 
                 )}
 
             </Draggable>
-
-
 
         </>
     )

@@ -32,29 +32,32 @@ exports.updateTodosOrder = catchAsync(async (req, res, next) => {
     const { todosOrder } = req.body;
     console.log(todosOrder, "todosOrder");
     let query = "";
-    todosOrder.map((el, index) => {
+    todosOrder?.map((el, index) => {
 
-        el.map((el2, index2) => {
+        el?.map((el2, index2) => {
             query += `update todo set todos_order = ${index2 + 1} where id = ${el2}; `
 
         })
-    })
 
+
+    })
     await sampledb.query(query);
+
 })
 
 exports.updateTodo = catchAsync(async (req, res, next) => {
-    console.log("selamlar");
     const { todoId } = req.params;
-    console.log(todoId, "params");
-    const { assignedTo, content, dueDate, } = req.body;
+
+    const { assignedTo, content, dueDate } = req.body;
+    let newDueDate = dueDate.split('T')[0];
+    console.log(assignedTo, content, newDueDate, "assignedTo, content, dueDate");
 
 
     Todo.update(
         {
-            assigned_to: assignedTo,
+            assignedTo: assignedTo,
             content: content,
-            due_date: dueDate
+            dueDate: newDueDate
         },
         {
             where: {

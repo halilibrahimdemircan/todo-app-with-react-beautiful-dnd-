@@ -3,6 +3,7 @@ import TodoProxy from '../proxy/TodoProxy';
 import Category from '../components/Category';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import uuid from "react-uuid"
 
 
 
@@ -47,6 +48,7 @@ const Homepage = () => {
         setLoading(true)
         todoProxy.getAllCategories()
             .then(res => {
+                console.log(res.data.data, "categories");
                 setCategory(res.data.data);
                 setCategoryOrder(() => {
                     return res.data.data.map((el) => { return el.id })
@@ -77,15 +79,18 @@ const Homepage = () => {
             return;
         }
         if (type === "column") {
+            console.log(category);
 
-            const items = [...category];
+            const items = category;
+            console.log(items, "items");
             const [removedItem] = items.splice(result.source.index, 1);
-            items.splice(result.destination.index, 0, removedItem);
+            console.log(removedItem, "removedItem");
+            items.splice(destination.index, 0, removedItem);
             setCategory(items);
 
             const orders = [...categoryOrder];
             const [removedOrder] = orders.splice(result.source.index, 1);
-            orders.splice(result.destination.index, 0, removedOrder);
+            orders.splice(destination.index, 0, removedOrder);
             setCategoryOrder(orders);
 
             return
@@ -107,6 +112,7 @@ const Homepage = () => {
             let item = todosOrder[sourceCategoryIndex][source.index];
             todosOrder[sourceCategoryIndex].splice(source.index, 1);
             todosOrder[destinationCategoryIndex].splice(destination.index, 0, item);
+            console.log(todosOrder, "todosOrder dragend");
             return todosOrder
         })
 
@@ -183,32 +189,26 @@ const Homepage = () => {
 
             <DragDropContext onDragEnd={handleDragEnd} >
 
-                <Droppable direction="horizontal"
-                    type="column" droppableId="droppable-main">
+                <Droppable
+                    direction="horizontal"
+                    type="column"
+                    droppableId="droppable-main">
                     {(provided) => (
 
-                        <div {...provided.droppableProps} ref={provided.innerRef}>
+                        <div {...provided.droppableProps}
+                            ref={provided.innerRef}>
                             {category?.map((cat, index) => {
                                 return (
 
-                                    <Draggable key={cat.id} draggableId={`${cat.id}`} index={index}>
-                                        {(provided) => (
+                                    <div style={{ "display": "inline-block" }} >
 
-                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} style={{ "display": "inline-block" }} >
+                                        <Category key={uuid()} content={cat} users={users} index={index} setTodosOrder={setTodosOrder} setCategory={setCategory} />
 
-                                                <Category content={cat} users={users} index={index} setTodosOrder={setTodosOrder} setCategory={setCategory} />
-
-
-
-                                            </div>
-
-
-
-
-                                        )}
-                                    </Draggable>
-
+                                    </div>
                                 )
+
+
+
                             })}
 
                             {provided.placeholder}

@@ -7,7 +7,7 @@ import TodoProxy from "../proxy/TodoProxy";
 
 
 
-const Item = ({ content, users, index }) => {
+const Item = ({ content, users, index, setCategory }) => {
     const todoProxy = new TodoProxy();
     const newContent = useRef()
     const [newDueDate, setNewDueDate] = useState('');
@@ -21,6 +21,17 @@ const Item = ({ content, users, index }) => {
 
     const handleShowDeleteTodoModal = () => setShowDeleteTodoModal(true)
     const handleCloseDeleteTodoModal = () => setShowDeleteTodoModal(false)
+
+    // const handleMarkAsDone = () => {
+    //       setCategory((category) => {
+    //           category.filter((el) =>{
+    //               el.category_name == ("Done" || "done")
+    //               return el.id
+    //           })
+    //       })
+
+
+    // }
 
     const handleSaveEditTodoModal = () => {
         console.log(content.id, newContent.current.value, newDueDate, newAssignedTo);
@@ -93,7 +104,7 @@ const Item = ({ content, users, index }) => {
                     <Button variant="danger" onClick={handleShowDeleteTodoModal}>
                         Delete
                     </Button>
-                    <Button variant="secondary" onClick={handleCloseEditTodoModal}>
+                    <Button variant="secondary" onClick={handleCloseDeleteTodoModal}>
                         Mark as Done
                     </Button>
 
@@ -121,7 +132,7 @@ const Item = ({ content, users, index }) => {
             </Modal>
 
 
-            <Draggable draggableId={`item-${content.id}`} key={content.id} index={index}>
+            <Draggable draggableId={`item-${content.id}`} index={index}>
                 {(provided) => (
                     <Card
                         {...provided.draggableProps}
