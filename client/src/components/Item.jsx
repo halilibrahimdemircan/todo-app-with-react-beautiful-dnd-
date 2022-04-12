@@ -7,7 +7,7 @@ import TodoProxy from "../proxy/TodoProxy";
 
 
 
-const Item = ({ content, users, index, setCategory }) => {
+const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
     const todoProxy = new TodoProxy();
     const newContent = useRef()
     const [newDueDate, setNewDueDate] = useState('');
@@ -160,7 +160,7 @@ const Item = ({ content, users, index, setCategory }) => {
                                         }
                                     >
                                         <Button size='sm' style={{ "float": "right" }} >
-                                            <i class="bi bi-person-fill"></i>
+                                            <i className="bi bi-person-fill"></i>
 
                                         </Button>
                                     </OverlayTrigger>
@@ -174,7 +174,7 @@ const Item = ({ content, users, index, setCategory }) => {
                                         year: 'numeric',
                                     })}</small>
                                     <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' style={{ "float": "right", "marginBottom": "1rem" }}>
-                                        <i class="bi bi-pencil-fill"></i>
+                                        <i className="bi bi-pencil-fill"></i>
                                     </Button>
                                 </Card.Text>
                             </Card.Body>

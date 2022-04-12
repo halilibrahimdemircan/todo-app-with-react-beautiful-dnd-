@@ -26,13 +26,13 @@ export default function Navigation() {
                             <Row>
                                 <Col md="1" xs="1" className=" bg-primary text-wrap">
 
-                                    <Button onClick={handleLogout}><i class="bi bi-box-arrow-left">
+                                    <Button onClick={handleLogout}><i className="bi bi-box-arrow-left">
                                     </i></Button>
 
                                 </Col>
                                 <Col md="3" xs="4">
                                     <Button className="bg-light bg-opacity-25">
-                                        <i class="bi bi-speedometer2"></i> Boards
+                                        <i className="bi bi-speedometer2"></i> Boards
                                     </Button>
                                 </Col>
                                 <Col md="8" xs="7" className="p-0">
@@ -58,13 +58,13 @@ export default function Navigation() {
                     </Col>
                     <Col md={{ span: 2, order: 3 }} xs={{ order: 3 }} className="text-center text-md-end">
                         <Button className="bg-light bg-opacity-25">
-                            <i class="bi bi-plus-square-fill"></i>
+                            <i className="bi bi-plus-square-fill"></i>
                         </Button>
                         <Button className="bg-light bg-opacity-25">
-                            <i class="bi bi-question-circle"></i>
+                            <i className="bi bi-question-circle"></i>
                         </Button>
                         <Button className="bg-light bg-opacity-25">
-                            <i class="bi bi-bell"></i>
+                            <i className="bi bi-bell"></i>
                         </Button>
                     </Col>
                 </Row>

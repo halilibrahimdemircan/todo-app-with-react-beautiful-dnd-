@@ -3,7 +3,6 @@ import { Card, Button, Modal, Form } from "react-bootstrap"
 import Item from "./Item";
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import TodoProxy from "../proxy/TodoProxy";
-import uuid from 'react-uuid'
 
 
 
@@ -22,14 +21,23 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
     const handleCloseCreateTodoModal = () => setShowCreateTodoModal(false)
 
     const handleSaveCreateTodoModal = () => {
-        let order = content.todos.length > 0 ? content.todos.length : 0;
-        todoProxy.createTodo(assignedTo, contentRef.current.value, dueDate, content.id, order)
+
+        console.log(content, "content");
+        todoProxy.createTodo(assignedTo, contentRef.current.value, dueDate, content.id, content.todos ? content.todos.length : 1)
             .then(res => {
                 console.log(res, "başarılı create");
                 setCategory((category) => {
+                    console.log(category, "category");
+                    console.log(category.map((el) => {
+                        if (el.id === content.id) {
+                            return el.todos ? [...el.todos, res.data.data] : [res.data.data]
+                        }
+                        return el
+                    }))
                     return category.map((el) => {
                         if (el.id === content.id) {
-                            el.todos.push(res.data.data)
+                            console.log(el, "el");
+                            return { ...el, todos: el.todos ? [...el.todos, res.data.data] : [res.data.data] }
                         }
                         return el
                     })
@@ -92,7 +100,7 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                             <Form.Label>Assign To</Form.Label>
                             <Form.Select onChange={(e) => { setAssignedTo(e.target.value) }}>
                                 <option>Choose</option>
-                                {users?.map(user => (
+                                {users?.map((user) => (
                                     <option key={user.id} value={user.email}>{user.email}</option>
                                 ))}
                             </Form.Select>
@@ -124,10 +132,10 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                         className="shadow-sm m-3"
                     >
                         <Card.Header >{content.category_name}
-                            <i style={{ "float": "right" }} class="bi bi-chevron-left"></i>
+                            <i style={{ "float": "right" }} className="bi bi-chevron-left"></i>
                         </Card.Header>
                         <Card.Body>
-                            <Droppable droppableId={`category-${content.id ? content.id : 0}`} type="task">
+                            <Droppable droppableId={`category-${content.id ? content.id : 0}`} type="todo">
                                 {(provided) => (
                                     <div
                                         className="d-flex flex-column border border-white overflow-auto"
@@ -137,11 +145,12 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                                     >
                                         {content.todos?.map((todo, idx) => (
                                             <Item
-                                                key={uuid()}
+                                                key={todo.id}
                                                 content={todo}
                                                 index={idx}
                                                 users={users}
                                                 setCategory={setCategory}
+                                                setTodosOrder={setTodosOrder}
 
                                             // columnId={props.column.id}
                                             // state={props.state}
@@ -153,26 +162,11 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                                 )}
                             </Droppable>
 
-                            {/* {todos?.map((todo) => {
-                                    return (
-                                        <Draggable key={todo.id} draggableId={todo.id.toString()} index={todos.indexOf(todo)}>
-                                            {(provider) => (
-                                                <div ref={provider.innerRef} {...provider.draggableProps} {...provider.dragHandleProps}>
-                                                    <Item key={todo.id} content={todo} users={users} />
-
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    )
-                                })} */}
-
-
-
                         </Card.Body>
                         <Card.Footer className="text-center">
                             <Button onClick={handleShowCreateTodoModal} variant="primary" size='sm' style={{}}>
                                 New Todo
-                                <i class="bi bi-plus-square"></i>
+                                <span className='m-2'><i className="bi bi-plus-square"></i></span>
                             </Button>
                         </Card.Footer>
                     </Card>

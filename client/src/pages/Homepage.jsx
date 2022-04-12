@@ -200,11 +200,8 @@ const Homepage = () => {
                             {category?.map((cat, index) => {
                                 return (
 
-                                    <div style={{ "display": "inline-block" }} >
+                                    <Category key={cat.id} content={cat} users={users} index={index} setTodosOrder={setTodosOrder} setCategory={setCategory} />
 
-                                        <Category key={uuid()} content={cat} users={users} index={index} setTodosOrder={setTodosOrder} setCategory={setCategory} />
-
-                                    </div>
                                 )
 
 
@@ -213,6 +210,8 @@ const Homepage = () => {
 
                             {provided.placeholder}
                         </div>
+
+
                     )}
 
                 </Droppable>
