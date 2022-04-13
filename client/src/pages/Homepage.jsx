@@ -205,7 +205,6 @@ const Homepage = () => {
                                 as="textarea"
                                 rows={2}
                                 placeholder="Please type content here..."
-                                value={categoryName}
                                 onChange={(e) => setcategoryName(e.target.value.toUpperCase())}
                             />
                         </Form.Group>

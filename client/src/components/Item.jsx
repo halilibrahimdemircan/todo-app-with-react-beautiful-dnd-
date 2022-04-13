@@ -23,7 +23,7 @@ const Item = ({
     setCategoryOrder,
 }) => {
     const todoProxy = new TodoProxy();
-    const newContent = useRef({ value: content.content });
+    const [newContent, setNewContent] = useState(content.content);
     const [newDueDate, setNewDueDate] = useState(content.dueDate);
     const [newAssignedTo, setNewAssignedTo] = useState(content.assignedTo);
 
@@ -50,7 +50,7 @@ const Item = ({
         todoProxy
             .updateTodo(
                 content.id,
-                newContent.current.value,
+                newContent,
                 newDueDate,
                 newAssignedTo
             )
@@ -64,8 +64,8 @@ const Item = ({
                                     if (todo.id == content.id) {
                                         return {
                                             ...todo,
-                                            content: newContent.current.value,
-                                            due_date: newDueDate,
+                                            content: newContent,
+                                            dueDate: newDueDate,
                                             assigned_to: newAssignedTo,
                                         };
                                     }
@@ -120,7 +120,7 @@ const Item = ({
         todoProxy
             .markAsDone(
                 content.id,
-                newContent.current.value,
+                newContent,
                 newDueDate,
                 newAssignedTo
             )
@@ -222,6 +222,7 @@ const Item = ({
                                 type="date"
                                 placeholder="Due Date"
                                 autoFocus
+                                value={newDueDate}
                                 onChange={(e) => {
                                     setNewDueDate(e.target.value);
                                 }}
@@ -236,7 +237,8 @@ const Item = ({
                                 as="textarea"
                                 rows={2}
                                 placeholder="Please type new content here..."
-                                ref={newContent}
+                                value={newContent}
+                                onChange={(e) => setNewContent(e.target.value)}
                             />
                         </Form.Group>
 
@@ -246,6 +248,7 @@ const Item = ({
                                 onChange={(e) => {
                                     setNewAssignedTo(e.target.value);
                                 }}
+                                value={newAssignedTo}
                             >
                                 <option>Choose</option>
                                 {users.map((user) => (
@@ -261,7 +264,7 @@ const Item = ({
                     <Button variant="danger" onClick={handleShowDeleteTodoModal}>
                         Delete
                     </Button>
-                    <Button variant="secondary" onClick={handleSaveMarkAsDone}>
+                    <Button disabled={categoryName == "DONE"} variant="secondary" onClick={handleSaveMarkAsDone}>
                         Mark as Done
                     </Button>
 
