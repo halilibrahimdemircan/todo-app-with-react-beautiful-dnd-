@@ -1,65 +1,63 @@
-import React, { useState, useRef } from 'react'
-import { Card, Button, Modal, Form } from "react-bootstrap"
+import React, { useState, useRef } from "react";
+import { Card, Button, Modal, Form } from "react-bootstrap";
 import Item from "./Item";
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from "react-beautiful-dnd";
 import TodoProxy from "../proxy/TodoProxy";
 
-
-
-const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
+const Category = ({ content, users, index, setTodosOrder, setCategory, categoryNames, setCategoryNames,
+    setCategoryOrder }) => {
     const todoProxy = new TodoProxy();
 
     const contentRef = useRef();
-    const [dueDate, setDueDate] = useState('');
-    const [showCreateTodoModal, setShowCreateTodoModal] = useState(false)
+    const [dueDate, setDueDate] = useState("");
+    const [showCreateTodoModal, setShowCreateTodoModal] = useState(false);
     const [assignedTo, setAssignedTo] = useState("");
 
-
-
-
-    const handleShowCreateTodoModal = () => setShowCreateTodoModal(true)
-    const handleCloseCreateTodoModal = () => setShowCreateTodoModal(false)
+    const handleShowCreateTodoModal = () => setShowCreateTodoModal(true);
+    const handleCloseCreateTodoModal = () => setShowCreateTodoModal(false);
 
     const handleSaveCreateTodoModal = () => {
-
-        todoProxy.createTodo(assignedTo, contentRef.current.value, dueDate, content.id, content.todos ? content.todos.length : 1)
-            .then(res => {
+        todoProxy
+            .createTodo(
+                assignedTo,
+                contentRef.current.value,
+                dueDate,
+                content.id,
+                content.todos ? content.todos.length : 1
+            )
+            .then((res) => {
                 setCategory((category) => {
-
                     return category.map((el) => {
                         if (el.id === content.id) {
-                            return { ...el, todos: el.todos ? [...el.todos, res.data.data] : [res.data.data] }
+                            return {
+                                ...el,
+                                todos: el.todos
+                                    ? [...el.todos, res.data.data]
+                                    : [res.data.data],
+                            };
                         }
-                        return el
-                    })
-
-                })
+                        return el;
+                    });
+                });
                 setTodosOrder((todosOrder) => {
-
                     return todosOrder.map((el, i) => {
                         if (i === index) {
-                            return [...el, res.data.data.id]
+                            return [...el, res.data.data.id];
                         }
-                        return el
-                    })
+                        return el;
+                    });
+                });
 
-                })
-
-
-                setShowCreateTodoModal(false)
+                setShowCreateTodoModal(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
-                setShowCreateTodoModal(false)
-            })
-
-
-
-    }
+                setShowCreateTodoModal(false);
+            });
+    };
 
     return (
         <>
-
             <Modal show={showCreateTodoModal} onHide={handleCloseCreateTodoModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create New Todo</Modal.Title>
@@ -72,7 +70,9 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                                 type="date"
                                 placeholder="Due Date"
                                 autoFocus
-                                onChange={(e) => { setDueDate(e.target.value) }}
+                                onChange={(e) => {
+                                    setDueDate(e.target.value);
+                                }}
                             />
                         </Form.Group>
                         <Form.Group
@@ -80,14 +80,25 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                             controlId="exampleForm.ControlTextarea1"
                         >
                             <Form.Label>Content</Form.Label>
-                            <Form.Control as="textarea" rows={2} placeholder="Please type content here..." ref={contentRef} />
+                            <Form.Control
+                                as="textarea"
+                                rows={2}
+                                placeholder="Please type content here..."
+                                ref={contentRef}
+                            />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicCheckbox">
                             <Form.Label>Assign To</Form.Label>
-                            <Form.Select onChange={(e) => { setAssignedTo(e.target.value) }}>
+                            <Form.Select
+                                onChange={(e) => {
+                                    setAssignedTo(e.target.value);
+                                }}
+                            >
                                 <option>Choose</option>
                                 {users?.map((user) => (
-                                    <option key={user.id} value={user.email}>{user.email}</option>
+                                    <option key={user.id} value={user.email}>
+                                        {user.email}
+                                    </option>
                                 ))}
                             </Form.Select>
                         </Form.Group>
@@ -104,28 +115,29 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                 </Modal.Footer>
             </Modal>
 
-
-
             <Draggable draggableId={`cat-${content.id}`} index={index}>
                 {(provided) => (
-                    <div style={{ "height": "min-content", minWidth: "350px" }}>
+                    <div style={{ height: "min-content", minWidth: "350px" }}>
                         <Card
                             {...provided.draggableProps}
                             ref={provided.innerRef}
                             {...provided.dragHandleProps}
                             className="shadow-sm m-3 inline-flex "
                         >
-                            <Card.Header className='d-flex justify-content-between' ><span>{content.category_name}</span>
+                            <Card.Header className="d-flex justify-content-between">
+                                <span>{content.category_name}</span>
                                 <i className="bi bi-chevron-left"></i>
                             </Card.Header>
                             <Card.Body>
-                                <Droppable droppableId={`category-${content.id ? content.id : 0}`} type="todo">
+                                <Droppable
+                                    droppableId={`category-${content.id ? content.id : 0}`}
+                                    type="todo"
+                                >
                                     {(provided) => (
                                         <div
                                             className="d-flex flex-column border border-white overflow-auto"
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
-
                                         >
                                             {content.todos?.map((todo, idx) => (
                                                 <Item
@@ -135,6 +147,11 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                                                     users={users}
                                                     setCategory={setCategory}
                                                     setTodosOrder={setTodosOrder}
+                                                    categoryId={content.id}
+                                                    categoryName={content}
+                                                    categoryNames={categoryNames}
+                                                    setCategoryNames={setCategoryNames}
+                                                    setCategoryOrder={setCategoryOrder}
 
                                                 // columnId={props.column.id}
                                                 // state={props.state}
@@ -145,23 +162,25 @@ const Category = ({ content, users, index, setTodosOrder, setCategory }) => {
                                         </div>
                                     )}
                                 </Droppable>
-
                             </Card.Body>
                             <Card.Footer className="text-center">
-                                <Button onClick={handleShowCreateTodoModal} variant="primary" size='sm'>
+                                <Button
+                                    onClick={handleShowCreateTodoModal}
+                                    variant="primary"
+                                    size="sm"
+                                >
                                     New Todo
-                                    <span className='m-2'><i className="bi bi-plus-square"></i></span>
+                                    <span className="m-2">
+                                        <i className="bi bi-plus-square"></i>
+                                    </span>
                                 </Button>
                             </Card.Footer>
                         </Card>
-
                     </div>
                 )}
-
             </Draggable>
-
         </>
-    )
-}
+    );
+};
 
-export default Category
+export default Category;

@@ -13,6 +13,7 @@ const Homepage = () => {
     const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
     const [categoryOrder, setCategoryOrder] = useState([]);
     const [todosOrder, setTodosOrder] = useState([]);
+    const [categoryNames, setCategoryNames] = useState([]);
 
     const handleShowAddCategoryModal = () => setShowAddCategoryModal(true);
     const handleCloseAddCategoryModal = () => setShowAddCategoryModal(false);
@@ -22,8 +23,10 @@ const Homepage = () => {
             .createCategory(categoryName, categoryOrder.length)
             .then((res) => {
                 setCategory([...category, res.data.data]);
+                setCategoryOrder([...categoryOrder, res.data.data.id]);
                 setTodosOrder([...todosOrder, []]);
                 setShowAddCategoryModal(false);
+                setCategoryNames([...categoryNames, categoryName]);
             })
             .catch((err) => {
                 console.log(err);
@@ -51,11 +54,15 @@ const Homepage = () => {
                     });
                 });
                 setTodosOrder(() => {
-
                     return res.data.data.map((el) => {
                         return el.todos.map((elm) => {
                             return elm.id;
                         });
+                    });
+                });
+                setCategoryNames(() => {
+                    return res.data.data.map((el) => {
+                        return el.category_name;
                     });
                 });
                 setLoading(false);
@@ -79,7 +86,6 @@ const Homepage = () => {
             return;
         }
         if (type === "column") {
-
             const items = category;
             const [removedItem] = items.splice(result.source.index, 1);
             items.splice(destination.index, 0, removedItem);
@@ -101,14 +107,19 @@ const Homepage = () => {
         });
 
         setCategory((category) => {
+            console.log(category);
             let item = category[sourceCategoryIndex].todos[source.index];
             category[sourceCategoryIndex].todos.splice(source.index, 1);
-            category[destinationCategoryIndex].todos.splice(
-                destination.index,
-                0,
-                item
-            );
-            return category;
+            if (!!category[destinationCategoryIndex].todos) {
+                category[destinationCategoryIndex].todos.splice(
+                    destination.index,
+                    0,
+                    item
+                );
+            } else {
+                category[destinationCategoryIndex].todos = [item];
+            }
+            return [...category];
         });
         setTodosOrder((todosOrder) => {
             let item = todosOrder[sourceCategoryIndex][source.index];
@@ -120,7 +131,6 @@ const Homepage = () => {
     useEffect(() => {
         console.log("useeffecttodoorder", todosOrder);
         todoProxy.changeTodosOrder(todosOrder, categoryOrder);
-
     }, [todosOrder]);
 
     useEffect(() => {
@@ -152,7 +162,7 @@ const Homepage = () => {
                                 rows={2}
                                 placeholder="Please type content here..."
                                 value={categoryName}
-                                onChange={(e) => setcategoryName(e.target.value)}
+                                onChange={(e) => setcategoryName(e.target.value.toUpperCase())}
                             />
                         </Form.Group>
                     </Form>
@@ -162,7 +172,14 @@ const Homepage = () => {
                         Close
                     </Button>
 
-                    <Button variant="primary" onClick={handleSaveAddCategoryModal}>
+                    <Button
+                        disabled={
+                            categoryNames.filter((catName) => categoryName == catName)
+                                .length > 0
+                        }
+                        variant="primary"
+                        onClick={handleSaveAddCategoryModal}
+                    >
                         Save Changes
                     </Button>
                 </Modal.Footer>
@@ -199,6 +216,9 @@ const Homepage = () => {
                                         index={index}
                                         setTodosOrder={setTodosOrder}
                                         setCategory={setCategory}
+                                        categoryNames={categoryNames}
+                                        setCategoryNames={setCategoryNames}
+                                        setCategoryOrder={setCategoryOrder}
                                     />
                                 );
                             })}

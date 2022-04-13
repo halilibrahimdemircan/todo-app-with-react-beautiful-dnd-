@@ -30,6 +30,7 @@ export default class TodoProxy {
         })
     }
 
+
     changeCategoryOrder(categoryOrders) {
         return Repository.post("http://localhost:8000/api/category/order", {
             categoryOrders
@@ -47,6 +48,17 @@ export default class TodoProxy {
         console.log(todoId, content, dueDate, assignedTo);
         return Repository.patch(`http://localhost:8000/api/todo/${todoId}`, {
 
+            content: content,
+            dueDate: new Date(dueDate),
+            assignedTo: assignedTo
+        })
+    }
+
+    deleteTodo(todoId) {
+        return Repository.delete(`http://localhost:8000/api/todo/${todoId}`)
+    }
+    markAsDone(todoId, content, dueDate, assignedTo) {
+        return Repository.patch(`http://localhost:8000/api/todo/${todoId}/done`, {
             content: content,
             dueDate: new Date(dueDate),
             assignedTo: assignedTo

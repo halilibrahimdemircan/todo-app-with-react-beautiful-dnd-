@@ -1,26 +1,40 @@
-
-import React, { useState, useRef } from 'react'
-import { Card, Button, Modal, Form, OverlayTrigger, Tooltip } from "react-bootstrap"
-import { Draggable } from 'react-beautiful-dnd';
+import React, { useState, useRef } from "react";
+import {
+    Card,
+    Button,
+    Modal,
+    Form,
+    OverlayTrigger,
+    Tooltip,
+} from "react-bootstrap";
+import { Draggable } from "react-beautiful-dnd";
 import TodoProxy from "../proxy/TodoProxy";
 
-
-
-
-const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
+const Item = ({
+    content,
+    users,
+    index,
+    setCategory,
+    setTodosOrder,
+    categoryId,
+    categoryNames,
+    categoryName,
+    setCategoryNames,
+    setCategoryOrder,
+}) => {
     const todoProxy = new TodoProxy();
-    const newContent = useRef()
-    const [newDueDate, setNewDueDate] = useState('');
-    const [newAssignedTo, setNewAssignedTo] = useState('');
+    const newContent = useRef();
+    const [newDueDate, setNewDueDate] = useState("");
+    const [newAssignedTo, setNewAssignedTo] = useState("");
 
-    const [showEditTodoModal, setShowEditTodoModal] = useState(false)
-    const [showDeleteTodoModal, setShowDeleteTodoModal] = useState(false)
+    const [showEditTodoModal, setShowEditTodoModal] = useState(false);
+    const [showDeleteTodoModal, setShowDeleteTodoModal] = useState(false);
 
-    const handleShowEditTodoModal = () => setShowEditTodoModal(true)
-    const handleCloseEditTodoModal = () => setShowEditTodoModal(false)
+    const handleShowEditTodoModal = () => setShowEditTodoModal(true);
+    const handleCloseEditTodoModal = () => setShowEditTodoModal(false);
 
-    const handleShowDeleteTodoModal = () => setShowDeleteTodoModal(true)
-    const handleCloseDeleteTodoModal = () => setShowDeleteTodoModal(false)
+    const handleShowDeleteTodoModal = () => setShowDeleteTodoModal(true);
+    const handleCloseDeleteTodoModal = () => setShowDeleteTodoModal(false);
 
     // const handleMarkAsDone = () => {
     //       setCategory((category) => {
@@ -30,39 +44,168 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
     //           })
     //       })
 
-
     // }
 
     const handleSaveEditTodoModal = () => {
+        todoProxy
+            .updateTodo(
+                content.id,
+                newContent.current.value,
+                newDueDate,
+                newAssignedTo
+            )
+            .then(() => {
+                setCategory((category) => {
+                    return category.map((el) => {
+                        if (el.id == categoryId) {
+                            return {
+                                ...el,
+                                todos: el.todos.map((todo) => {
+                                    if (todo.id == content.id) {
+                                        return {
+                                            ...todo,
+                                            content: newContent.current.value,
+                                            due_date: newDueDate,
+                                            assigned_to: newAssignedTo,
+                                        };
+                                    }
+                                    return todo;
+                                }),
+                            };
+                        }
 
-        todoProxy.updateTodo(content.id, newContent.current.value, newDueDate, newAssignedTo)
-            .then((res) => {
-                console.log("başarılı update", res)
+                        return el;
+                    });
+                });
             })
             .catch((err) => {
-                console.log("err update", err)
-            })
-
+                console.log("err update", err);
+            });
 
         handleCloseEditTodoModal();
-
-
-    }
+    };
 
     const handleSaveDeleteTodoModal = () => {
-
-
+        todoProxy.deleteTodo(content.id).then(() => {
+            setCategory((category) => {
+                return category.map((el) => {
+                    if (el.id == categoryId) {
+                        return {
+                            ...el,
+                            todos: el.todos.filter((todo) => {
+                                return todo.id != content.id;
+                            }),
+                        };
+                    }
+                    return el;
+                });
+            });
+            setTodosOrder((todosOrder) => {
+                return todosOrder.map((el, i) => {
+                    if (i === index) {
+                        return el.filter((todoId) => {
+                            return todoId != content.id;
+                        });
+                    }
+                    return el;
+                });
+            });
+        });
 
         handleCloseDeleteTodoModal();
         handleCloseEditTodoModal();
+    };
 
-    }
+    const handleSaveMarkAsDone = () => {
+        todoProxy
+            .markAsDone(
+                content.id,
+                newContent.current.value,
+                newDueDate,
+                newAssignedTo
+            )
+            .then((response) => {
+                if (categoryNames.indexOf("DONE") == -1) {
+                    todoProxy.createCategory("DONE", categoryNames.length).then((res) => {
+                        setCategory((category) => {
+                            const updatedOldCategory = category.map((el) => {
+                                if (el.id == categoryId) {
+                                    return {
+                                        ...el,
+                                        todos: el.todos.filter((todo) => todo.id != content.id),
+                                    };
+                                }
+                                return el;
+                            });
 
+                            let newCategory = {
+                                ...res.data.data,
+                                todos: [response.data.data[1]],
+                            };
+                            console.log(updatedOldCategory, "updatedOldCategory");
+                            console.log([...updatedOldCategory, newCategory], "newCategory");
+                            return [...updatedOldCategory, newCategory];
+                        });
+                        setCategoryOrder((categoryOrder) => [
+                            ...categoryOrder,
+                            res.data.data.id,
+                        ]);
+                        setTodosOrder((todosOrder) => [...todosOrder, [content.id]]);
+                        setCategoryNames([...categoryNames, "DONE"]);
+                    });
+                } else {
+                    setCategory((category) => {
+                        console.log(
+                            category.map((el, idx) => {
+                                if (el.id == categoryId) {
+                                    return {
+                                        ...el,
+                                        todos: el.todos.filter((x) => x.id != content.id),
+                                    };
+                                } else if (idx == categoryNames.indexOf("DONE")) {
+                                    return {
+                                        ...el,
+                                        todos: [...el.todos, response.data.data[1]],
+                                    };
+                                }
 
+                                return el;
+                            })
+                        );
+                        return category.map((el, idx) => {
+                            if (el.id == categoryId) {
+                                return {
+                                    ...el,
+                                    todos: el.todos.filter((x) => x.id != content.id),
+                                };
+                            } else if (idx == categoryNames.indexOf("DONE")) {
+                                return {
+                                    ...el,
+                                    todos: [...el.todos, response.data.data[1]],
+                                };
+                            }
+
+                            return el;
+                        });
+                    });
+                    setTodosOrder((todosOrder) => {
+                        return todosOrder.map((el, i) => {
+                            if (i == categoryNames.indexOf(categoryName)) {
+                                return el.filter((todoId) => todoId != content.id);
+                            } else if (i == categoryNames.indexOf("DONE")) {
+                                return [...el, content.id];
+                            }
+                            return el;
+                        });
+                    });
+                }
+            });
+
+        handleCloseEditTodoModal();
+    };
 
     return (
         <>
-
             <Modal show={showEditTodoModal} onHide={handleCloseEditTodoModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Todo</Modal.Title>
@@ -75,7 +218,9 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                                 type="date"
                                 placeholder="Due Date"
                                 autoFocus
-                                onChange={(e) => { setNewDueDate(e.target.value) }}
+                                onChange={(e) => {
+                                    setNewDueDate(e.target.value);
+                                }}
                             />
                         </Form.Group>
                         <Form.Group
@@ -83,27 +228,36 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                             controlId="exampleForm.ControlTextarea1"
                         >
                             <Form.Label>Content</Form.Label>
-                            <Form.Control as="textarea" rows={2} placeholder="Please type new content here..." ref={newContent} />
+                            <Form.Control
+                                as="textarea"
+                                rows={2}
+                                placeholder="Please type new content here..."
+                                ref={newContent}
+                            />
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="formBasicCheckbox">
                             <Form.Label>Assign To</Form.Label>
-                            <Form.Select onChange={(e) => { setNewAssignedTo(e.target.value) }} >
+                            <Form.Select
+                                onChange={(e) => {
+                                    setNewAssignedTo(e.target.value);
+                                }}
+                            >
                                 <option>Choose</option>
-                                {users.map(user => (
-                                    <option key={user.id} value={user.email}>{user.email}</option>
+                                {users.map((user) => (
+                                    <option key={user.id} value={user.email}>
+                                        {user.email}
+                                    </option>
                                 ))}
                             </Form.Select>
                         </Form.Group>
-
-
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="danger" onClick={handleShowDeleteTodoModal}>
                         Delete
                     </Button>
-                    <Button variant="secondary" onClick={handleCloseDeleteTodoModal}>
+                    <Button variant="secondary" onClick={handleSaveMarkAsDone}>
                         Mark as Done
                     </Button>
 
@@ -112,8 +266,6 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-
 
             <Modal show={showDeleteTodoModal} onHide={handleCloseDeleteTodoModal}>
                 <Modal.Header closeButton>
@@ -130,7 +282,6 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                 </Modal.Footer>
             </Modal>
 
-
             <Draggable draggableId={`item-${content.id}`} index={index}>
                 {(provided) => (
                     <Card
@@ -139,44 +290,38 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                         ref={provided.innerRef}
                         className="my-2 shadow"
                     >
-                        <div
-                            className={
-                                "border-start border-3 rounded"
-                            }
-                        >
-
+                        <div className={"border-start border-3 rounded"}>
                             <Card.Body>
                                 <Card.Text>
                                     {content.content}
                                     <OverlayTrigger
-
                                         placement="top"
-                                        overlay={
-                                            <Tooltip >
-                                                {content.assignedTo}
-                                            </Tooltip>
-                                        }
+                                        overlay={<Tooltip>{content.assignedTo}</Tooltip>}
                                     >
-                                        <Button size='sm' style={{ "float": "right" }} >
+                                        <Button size="sm" style={{ float: "right" }}>
                                             <i className="bi bi-person-fill"></i>
-
                                         </Button>
                                     </OverlayTrigger>
                                 </Card.Text>
                                 <hr></hr>
-                                <Card.Text className='d-flex justify-content-between align-items-center'>
-
-                                    <small className="text-muted">Due Date: {new Date(content.dueDate).toLocaleString('en', {
-                                        month: 'long',
-                                        day: 'numeric',
-                                        year: 'numeric',
-                                    })}</small>
-                                    <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' >
+                                <Card.Text className="d-flex justify-content-between align-items-center">
+                                    <small className="text-muted">
+                                        Due Date:{" "}
+                                        {new Date(content.dueDate).toLocaleString("en", {
+                                            month: "long",
+                                            day: "numeric",
+                                            year: "numeric",
+                                        })}
+                                    </small>
+                                    <Button
+                                        onClick={handleShowEditTodoModal}
+                                        variant="primary"
+                                        size="sm"
+                                    >
                                         <i className="bi bi-pencil-fill"></i>
                                     </Button>
                                 </Card.Text>
                             </Card.Body>
-
                         </div>
                     </Card>
                 )}
@@ -218,9 +363,7 @@ const Item = ({ content, users, index, setCategory, setTodosOrder }) => {
                 </Card.Body>
             </Card> */}
         </>
-    )
-}
+    );
+};
 
-export default Item
-
-
+export default Item;
