@@ -47,7 +47,6 @@ const Homepage = () => {
         todoProxy
             .getAllCategories()
             .then((res) => {
-                console.log(res.data.data);
                 setCategory(res.data.data);
                 setCategoryOrder(() => {
                     return res.data.data.map((el) => {
@@ -55,11 +54,7 @@ const Homepage = () => {
                     });
                 });
                 setTodosOrder(() => {
-                    console.log(res.data.data.map((el) => {
-                        return el.todos.sort((a, b) => a.todos_order - b.todos_order).map((elm) => {
-                            return elm.id;
-                        });
-                    }));
+
                     return res.data.data.map((el) => {
                         return el.todos.sort((a, b) => a.todos_order - b.todos_order).map((elm) => {
                             return elm.id;
@@ -94,7 +89,6 @@ const Homepage = () => {
         if (type === "column") {
             const items = [...category];
             const [removedItem] = items.splice(result.source.index, 1);
-            console.log(removedItem, "removedItem");
             items.splice(destination.index, 0, removedItem);
             setCategory(items);
 
@@ -104,7 +98,6 @@ const Homepage = () => {
             setCategoryOrder(catOrders);
 
             const todoOrders = [...todosOrder];
-            console.log(todoOrders, "todoOrders");
 
             return;
         }
@@ -117,7 +110,6 @@ const Homepage = () => {
         });
 
         setCategory((category) => {
-            console.log(category);
             let item = category[sourceCategoryIndex].todos[source.index];
             category[sourceCategoryIndex].todos.splice(source.index, 1);
             if (!!category[destinationCategoryIndex].todos) {
@@ -132,18 +124,10 @@ const Homepage = () => {
             return [...category];
         });
         setTodosOrder((todosOrder) => {
-            console.log(source, "source");
-            console.log(sourceCategoryIndex, "sourceCategoryIndex");
-            console.log(destination, "destination");
-            console.log(destinationCategoryIndex, "destinationCategoryIndex");
-            console.log(type, "type");
-            console.log(draggableId, "draggableId");
-            console.log(todosOrder, "todosOrder1");
 
             let item = todosOrder[sourceCategoryIndex][source.index];
 
             let newSourceTodoOrder = [...todosOrder[sourceCategoryIndex]];
-            console.log(newSourceTodoOrder, "todosOrder2");
             newSourceTodoOrder.splice(source.index, 1);
             if (sourceCategoryIndex == destinationCategoryIndex) {
                 newSourceTodoOrder.splice(destination.index, 0, item);
@@ -173,7 +157,6 @@ const Homepage = () => {
         });
     };
     useEffect(() => {
-        console.log("useeffecttodoorder", todosOrder);
         todoProxy.changeTodosOrder(todosOrder, categoryOrder);
     }, [todosOrder]);
 

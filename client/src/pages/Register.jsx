@@ -15,7 +15,6 @@ const Register = () => {
         setLoading(true);
         userProxy.saveUser(emailRef.current.value, passwordRef.current.value)
             .then((res) => {
-                console.log(res);
                 setLoading(false);
                 alert("Başarıyla kayıt oldunuz.")
                 window.location.href = '/login';

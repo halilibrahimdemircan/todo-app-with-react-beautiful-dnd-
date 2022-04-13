@@ -142,8 +142,6 @@ const Item = ({
                                 ...res.data.data,
                                 todos: [response.data.data[1]],
                             };
-                            console.log(updatedOldCategory, "updatedOldCategory");
-                            console.log([...updatedOldCategory, newCategory], "newCategory");
                             return [...updatedOldCategory, newCategory];
                         });
                         setCategoryOrder((categoryOrder) => [
@@ -155,23 +153,6 @@ const Item = ({
                     });
                 } else {
                     setCategory((category) => {
-                        console.log(
-                            category.map((el, idx) => {
-                                if (el.id == categoryId) {
-                                    return {
-                                        ...el,
-                                        todos: el.todos.filter((x) => x.id != content.id),
-                                    };
-                                } else if (idx == categoryNames.indexOf("DONE")) {
-                                    return {
-                                        ...el,
-                                        todos: [...el.todos, response.data.data[1]],
-                                    };
-                                }
-
-                                return el;
-                            })
-                        );
                         return category.map((el, idx) => {
                             if (el.id == categoryId) {
                                 return {
@@ -189,12 +170,10 @@ const Item = ({
                         });
                     });
                     setTodosOrder((todosOrder) => {
-                        console.log(categoryNames, "categoryNames");
-                        console.log(categoryName, "categoryName");
-                        console.log(categoryNames.indexOf(categoryName));
+
                         return todosOrder.map((el, i) => {
                             if (i == categoryNames.indexOf(categoryName)) {
-                                console.log(el, "el");
+
                                 return el.filter((todoIds) => todoIds != content.id);
                             } else if (i == categoryNames.indexOf("DONE")) {
                                 return [...el, content.id];
