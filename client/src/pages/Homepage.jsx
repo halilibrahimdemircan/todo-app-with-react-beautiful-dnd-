@@ -47,6 +47,7 @@ const Homepage = () => {
         todoProxy
             .getAllCategories()
             .then((res) => {
+                console.log(res.data.data);
                 setCategory(res.data.data);
                 setCategoryOrder(() => {
                     return res.data.data.map((el) => {
@@ -54,8 +55,13 @@ const Homepage = () => {
                     });
                 });
                 setTodosOrder(() => {
+                    console.log(res.data.data.map((el) => {
+                        return el.todos.sort((a, b) => a.todos_order - b.todos_order).map((elm) => {
+                            return elm.id;
+                        });
+                    }));
                     return res.data.data.map((el) => {
-                        return el.todos.map((elm) => {
+                        return el.todos.sort((a, b) => a.todos_order - b.todos_order).map((elm) => {
                             return elm.id;
                         });
                     });
@@ -74,7 +80,7 @@ const Homepage = () => {
     };
 
     const handleDragEnd = (result) => {
-        const { destination, source, type } = result;
+        const { destination, source, type, draggableId } = result;
         if (!destination) {
             return;
         }
@@ -86,15 +92,19 @@ const Homepage = () => {
             return;
         }
         if (type === "column") {
-            const items = category;
+            const items = [...category];
             const [removedItem] = items.splice(result.source.index, 1);
+            console.log(removedItem, "removedItem");
             items.splice(destination.index, 0, removedItem);
             setCategory(items);
 
-            const orders = [...categoryOrder];
-            const [removedOrder] = orders.splice(result.source.index, 1);
-            orders.splice(destination.index, 0, removedOrder);
-            setCategoryOrder(orders);
+            const catOrders = [...categoryOrder];
+            const [removedOrder] = catOrders.splice(result.source.index, 1);
+            catOrders.splice(destination.index, 0, removedOrder);
+            setCategoryOrder(catOrders);
+
+            const todoOrders = [...todosOrder];
+            console.log(todoOrders, "todoOrders");
 
             return;
         }
@@ -122,10 +132,44 @@ const Homepage = () => {
             return [...category];
         });
         setTodosOrder((todosOrder) => {
+            console.log(source, "source");
+            console.log(sourceCategoryIndex, "sourceCategoryIndex");
+            console.log(destination, "destination");
+            console.log(destinationCategoryIndex, "destinationCategoryIndex");
+            console.log(type, "type");
+            console.log(draggableId, "draggableId");
+            console.log(todosOrder, "todosOrder1");
+
             let item = todosOrder[sourceCategoryIndex][source.index];
-            todosOrder[sourceCategoryIndex].splice(source.index, 1);
-            todosOrder[destinationCategoryIndex].splice(destination.index, 0, item);
-            return [...todosOrder];
+
+            let newSourceTodoOrder = [...todosOrder[sourceCategoryIndex]];
+            console.log(newSourceTodoOrder, "todosOrder2");
+            newSourceTodoOrder.splice(source.index, 1);
+            if (sourceCategoryIndex == destinationCategoryIndex) {
+                newSourceTodoOrder.splice(destination.index, 0, item);
+                return todosOrder.map((el, index) => {
+                    if (index == sourceCategoryIndex) {
+                        return newSourceTodoOrder;
+                    } else {
+                        return el;
+                    }
+                });
+            } else {
+                const newDestinationTodoOrder = [
+                    ...todosOrder[destinationCategoryIndex],
+                ];
+                newDestinationTodoOrder.splice(destination.index, 0, item);
+                return todosOrder.map((el, index) => {
+                    if (index == sourceCategoryIndex) {
+                        return newSourceTodoOrder;
+                    } else if (index == destinationCategoryIndex) {
+                        return newDestinationTodoOrder;
+                    } else {
+                        return el;
+                    }
+                });
+            }
+
         });
     };
     useEffect(() => {

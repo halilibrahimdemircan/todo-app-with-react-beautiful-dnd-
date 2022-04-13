@@ -8,7 +8,6 @@ const { updateUserById } = require('./userController');
 const category = require('../models/category');
 
 exports.createCategory = catchAsync(async (req, res, next) => {
-    console.log("halil ibrahim", req.body);
     const { categoryName, categoryOrder } = req.body;
     const category = await Category.create(
         {

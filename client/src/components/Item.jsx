@@ -23,9 +23,9 @@ const Item = ({
     setCategoryOrder,
 }) => {
     const todoProxy = new TodoProxy();
-    const newContent = useRef();
-    const [newDueDate, setNewDueDate] = useState("");
-    const [newAssignedTo, setNewAssignedTo] = useState("");
+    const newContent = useRef({ value: content.content });
+    const [newDueDate, setNewDueDate] = useState(content.dueDate);
+    const [newAssignedTo, setNewAssignedTo] = useState(content.assignedTo);
 
     const [showEditTodoModal, setShowEditTodoModal] = useState(false);
     const [showDeleteTodoModal, setShowDeleteTodoModal] = useState(false);
@@ -189,9 +189,13 @@ const Item = ({
                         });
                     });
                     setTodosOrder((todosOrder) => {
+                        console.log(categoryNames, "categoryNames");
+                        console.log(categoryName, "categoryName");
+                        console.log(categoryNames.indexOf(categoryName));
                         return todosOrder.map((el, i) => {
                             if (i == categoryNames.indexOf(categoryName)) {
-                                return el.filter((todoId) => todoId != content.id);
+                                console.log(el, "el");
+                                return el.filter((todoIds) => todoIds != content.id);
                             } else if (i == categoryNames.indexOf("DONE")) {
                                 return [...el, content.id];
                             }
