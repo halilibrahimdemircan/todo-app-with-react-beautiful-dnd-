@@ -26,7 +26,6 @@ const Item = ({
     const [newContent, setNewContent] = useState(content.content);
     const [newDueDate, setNewDueDate] = useState(content.dueDate);
     const [newAssignedTo, setNewAssignedTo] = useState(content.assignedTo);
-
     const [showEditTodoModal, setShowEditTodoModal] = useState(false);
     const [showDeleteTodoModal, setShowDeleteTodoModal] = useState(false);
 
@@ -36,24 +35,9 @@ const Item = ({
     const handleShowDeleteTodoModal = () => setShowDeleteTodoModal(true);
     const handleCloseDeleteTodoModal = () => setShowDeleteTodoModal(false);
 
-    // const handleMarkAsDone = () => {
-    //       setCategory((category) => {
-    //           category.filter((el) =>{
-    //               el.category_name == ("Done" || "done")
-    //               return el.id
-    //           })
-    //       })
-
-    // }
-
     const handleSaveEditTodoModal = () => {
         todoProxy
-            .updateTodo(
-                content.id,
-                newContent,
-                newDueDate,
-                newAssignedTo
-            )
+            .updateTodo(content.id, newContent, newDueDate, newAssignedTo)
             .then(() => {
                 setCategory((category) => {
                     return category.map((el) => {
@@ -118,12 +102,7 @@ const Item = ({
 
     const handleSaveMarkAsDone = () => {
         todoProxy
-            .markAsDone(
-                content.id,
-                newContent,
-                newDueDate,
-                newAssignedTo
-            )
+            .markAsDone(content.id, newContent, newDueDate, newAssignedTo)
             .then((response) => {
                 if (categoryNames.indexOf("DONE") == -1) {
                     todoProxy.createCategory("DONE", categoryNames.length).then((res) => {
@@ -170,10 +149,8 @@ const Item = ({
                         });
                     });
                     setTodosOrder((todosOrder) => {
-
                         return todosOrder.map((el, i) => {
                             if (i == categoryNames.indexOf(categoryName)) {
-
                                 return el.filter((todoIds) => todoIds != content.id);
                             } else if (i == categoryNames.indexOf("DONE")) {
                                 return [...el, content.id];
@@ -243,7 +220,11 @@ const Item = ({
                     <Button variant="danger" onClick={handleShowDeleteTodoModal}>
                         Delete
                     </Button>
-                    <Button disabled={categoryName == "DONE"} variant="secondary" onClick={handleSaveMarkAsDone}>
+                    <Button
+                        disabled={categoryName == "DONE"}
+                        variant="secondary"
+                        onClick={handleSaveMarkAsDone}
+                    >
                         Mark as Done
                     </Button>
 
@@ -281,8 +262,9 @@ const Item = ({
                                 <Card.Text>
                                     {content.content}
                                     <OverlayTrigger
+
                                         placement="top"
-                                        overlay={<Tooltip>{content.assignedTo}</Tooltip>}
+                                        overlay={<Tooltip >{content.assignedTo}</Tooltip>}
                                     >
                                         <Button size="sm" style={{ float: "right" }}>
                                             <i className="bi bi-person-fill"></i>
