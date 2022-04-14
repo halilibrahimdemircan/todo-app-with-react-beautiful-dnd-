@@ -3,6 +3,7 @@ import TodoProxy from "../proxy/TodoProxy";
 import Category from "../components/Category";
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import uuid from "react-uuid";
 
 const Homepage = () => {
     const todoProxy = new TodoProxy();
@@ -53,6 +54,7 @@ const Homepage = () => {
                     });
                 });
                 setTodosOrder(() => {
+
                     return res.data.data.map((el) => {
                         return el.todos
                             .sort((a, b) => a.todos_order - b.todos_order)
@@ -75,7 +77,7 @@ const Homepage = () => {
     };
 
     const handleDragEnd = (result) => {
-        const { destination, source, type } = result;
+        const { destination, source, type, draggableId } = result;
         if (!destination) {
             return;
         }

@@ -4,16 +4,8 @@ import Item from "./Item";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import TodoProxy from "../proxy/TodoProxy";
 
-const Category = ({
-    content,
-    users,
-    index,
-    setTodosOrder,
-    setCategory,
-    categoryNames,
-    setCategoryNames,
-    setCategoryOrder,
-}) => {
+const Category = ({ content, users, index, setTodosOrder, setCategory, categoryNames, setCategoryNames,
+    setCategoryOrder }) => {
     const todoProxy = new TodoProxy();
 
     const contentRef = useRef();
