@@ -66,7 +66,7 @@ const Item = ({
                                             ...todo,
                                             content: newContent,
                                             dueDate: newDueDate,
-                                            assignedTo: newAssignedTo,
+                                            assigned_to: newAssignedTo,
                                         };
                                     }
                                     return todo;
@@ -312,6 +312,42 @@ const Item = ({
                     </Card>
                 )}
             </Draggable>
+            {/* <Card style={{ "height": "", "display": "flex", "margin": "0.1rem" }}>
+                <Card.Body>
+                    <Card.Text>
+                        {content.content}
+                        <OverlayTrigger
+
+                            placement="top"
+                            overlay={
+                                <Tooltip >
+                                    <ul>
+
+                                    </ul>
+                                </Tooltip>
+                            }
+                        >
+                            <Button size='sm' style={{ "float": "right" }} >
+                                <i class="bi bi-person-fill"></i>
+
+                            </Button>
+                        </OverlayTrigger>
+
+
+
+
+
+
+
+                    </Card.Text>
+                    <hr></hr>
+                    <Card.Text>
+                        <Button onClick={handleShowEditTodoModal} variant="primary" size='sm' style={{ "float": "right" }}>
+                            <i class="bi bi-pencil-fill"></i>
+                        </Button>
+                    </Card.Text>
+                </Card.Body>
+            </Card> */}
         </>
     );
 };

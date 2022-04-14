@@ -56,11 +56,9 @@ const Homepage = () => {
                 setTodosOrder(() => {
 
                     return res.data.data.map((el) => {
-                        return el.todos
-                            .sort((a, b) => a.todos_order - b.todos_order)
-                            .map((elm) => {
-                                return elm.id;
-                            });
+                        return el.todos.sort((a, b) => a.todos_order - b.todos_order).map((elm) => {
+                            return elm.id;
+                        });
                     });
                 });
                 setCategoryNames(() => {
@@ -126,6 +124,7 @@ const Homepage = () => {
             return [...category];
         });
         setTodosOrder((todosOrder) => {
+
             let item = todosOrder[sourceCategoryIndex][source.index];
 
             let newSourceTodoOrder = [...todosOrder[sourceCategoryIndex]];
@@ -154,6 +153,7 @@ const Homepage = () => {
                     }
                 });
             }
+
         });
     };
     useEffect(() => {
@@ -214,7 +214,8 @@ const Homepage = () => {
             <Button
                 variant="outline-light"
                 onClick={handleShowAddCategoryModal}
-                className="mx-5 mt-3 mb-2"
+                className="m-5"
+                style={{}}
             >
                 New Category
             </Button>
@@ -229,7 +230,7 @@ const Homepage = () => {
                         <div
                             {...provided.droppableProps}
                             ref={provided.innerRef}
-                            style={{ height: "85vh" }}
+                            style={{ height: "80vh" }}
                             className="d-flex flex-nowrap overflow-auto"
                         >
                             {category?.map((cat, index) => {

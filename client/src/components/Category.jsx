@@ -109,7 +109,7 @@ const Category = ({ content, users, index, setTodosOrder, setCategory, categoryN
                         Close
                     </Button>
 
-                    <Button variant="primary" disabled={!dueDate || !assignedTo} onClick={handleSaveCreateTodoModal}>
+                    <Button variant="primary" onClick={handleSaveCreateTodoModal}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
@@ -128,9 +128,7 @@ const Category = ({ content, users, index, setTodosOrder, setCategory, categoryN
                                 <span>{content.category_name}</span>
                                 <i className="bi bi-chevron-left"></i>
                             </Card.Header>
-                            <Card.Body
-                                style={{ maxHeight: "70vh", overflowY: "auto" }}
-                            >
+                            <Card.Body>
                                 <Droppable
                                     droppableId={`category-${content.id ? content.id : 0}`}
                                     type="todo"
