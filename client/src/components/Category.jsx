@@ -117,7 +117,7 @@ const Category = ({
                         Close
                     </Button>
 
-                    <Button variant="primary" onClick={handleSaveCreateTodoModal}>
+                    <Button variant="primary" disabled={!dueDate || !assignedTo} onClick={handleSaveCreateTodoModal}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
@@ -136,7 +136,9 @@ const Category = ({
                                 <span>{content.category_name}</span>
                                 <i className="bi bi-chevron-left"></i>
                             </Card.Header>
-                            <Card.Body>
+                            <Card.Body
+                                style={{ maxHeight: "70vh", overflowY: "auto" }}
+                            >
                                 <Droppable
                                     droppableId={`category-${content.id ? content.id : 0}`}
                                     type="todo"
